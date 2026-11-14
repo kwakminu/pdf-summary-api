@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 논문 요약 공방</title>
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #231f20;
+            --cream: #fbf9f5;
+            --walnut-deep: #4a3222;
+            --walnut-mid: #6e4f3a;
+            --walnut-soft: #f2ece4;
+            --walnut-border: #c8b6a6;
+            --prism-line: linear-gradient(90deg, #f6d365 0%, #fda085 25%, #fbc2eb 50%, #a6c1ee 75%, #c2e9fb 100%);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Gowun Dodum', sans-serif;
+            background-color: #ebe6dd;
+            /* 빈티지 도트(망점) 배경 */
+            background-image: radial-gradient(rgba(35, 31, 32, 0.22) 1px, transparent 1px);
+            background-size: 16px 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 24px;
+            color: var(--ink);
+        }
+
+        /* 상단 미니멀 캡슐 배지 */
+        .top-pill {
+            background: #ffffff;
+            border: 2px solid var(--ink);
+            border-radius: 999px;
+            padding: 6px 18px;
+            font-family: 'Space Mono', monospace;
+            font-size: 12px;
+            font-weight: 700;
+            box-shadow: 0 3px 0 var(--ink);
+            margin-bottom: -13px;
+            z-index: 10;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--walnut-deep);
+        }
+
+        .prism-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: var(--prism-line);
+            border: 1.5px solid var(--ink);
+            display: inline-block;
+        }
+
+        /* 메인 공방 쇼윈도 카드 */
+        .shop-window {
+            background: var(--cream);
+            border: 2.5px solid var(--ink);
+            border-radius: 14px;
+            box-shadow: 6px 6px 0px var(--walnut-deep);
+            width: 100%;
+            max-width: 500px;
+            overflow: hidden;
+        }
+
+        /* 솔리드 월넛 브라운 상단 헤더 */
+        .walnut-header {
+            background-color: var(--walnut-deep);
+            height: 34px;
+            border-bottom: 2px solid var(--ink);
+            display: flex;
+            align-items: center;
+            padding: 0 14px;
+            gap: 6px;
+        }
+
+        .window-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--cream);
+            opacity: 0.7;
+        }
+
+        /* 은은한 프리즘 포인트 라인 */
+        .prism-bar {
+            height: 5px;
+            background: var(--prism-line);
+            border-bottom: 2px solid var(--ink);
+        }
+
+        .content-body {
+            padding: 36px 32px 32px;
+            text-align: center;
+        }
+
+        .badge-est {
+            font-family: 'Space Mono', monospace;
+            font-size: 11px;
+            color: var(--walnut-mid);
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        h1 {
+            font-size: 26px;
+            margin: 0 0 10px 0;
+            color: var(--walnut-deep);
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            font-size: 14.5px;
+            color: #665c52;
+            margin: 0 0 26px 0;
+            line-height: 1.5;
+        }
+
+        /* 미니멀 브라운 파일 업로드 영역 */
+        .upload-zone {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--walnut-soft);
+            border: 1.5px dashed var(--walnut-mid);
+            border-radius: 10px;
+            padding: 26px 18px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 18px;
+        }
+
+        .upload-zone:hover {
+            background-color: #eae0d5;
+            border-color: var(--walnut-deep);
+        }
+
+        .doc-icon {
+            width: 28px;
+            height: 28px;
+            stroke: var(--walnut-deep);
+            margin-bottom: 10px;
+        }
+
+        .file-label-text {
+            font-size: 14.5px;
+            font-weight: bold;
+            color: var(--walnut-deep);
+            word-break: break-all;
+        }
+
+        .file-sub-hint {
+            font-family: 'Space Mono', monospace;
+            font-size: 11px;
+            color: var(--walnut-mid);
+            margin-top: 4px;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        /* 월넛 우드 버튼 + 은은한 프리즘 호버 */
+        .submit-btn {
+            width: 100%;
+            background-color: var(--walnut-deep);
+            color: var(--cream);
+            font-family: 'Gowun Dodum', sans-serif;
+            font-size: 15.5px;
+            font-weight: bold;
+            padding: 13px 20px;
+            border: 2px solid var(--ink);
+            border-radius: 8px;
+            box-shadow: 3px 3px 0px var(--ink);
+            cursor: pointer;
+            transition: all 0.15s ease;
+            letter-spacing: 0.5px;
+        }
+
+        .submit-btn:hover {
+            background: var(--prism-line);
+            color: var(--ink);
+            transform: translate(-1px, -1px);
+            box-shadow: 4px 4px 0px var(--ink);
+        }
+
+        .submit-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 1px 1px 0px var(--ink);
+        }
+
+        /* 로딩 바 */
+        .loading-wrap {
+            display: none;
+            margin-top: 22px;
+        }
+
+        .loading-bar {
+            height: 6px;
+            width: 100%;
+            background: var(--prism-line);
+            background-size: 200% 100%;
+            border: 1.5px solid var(--ink);
+            border-radius: 999px;
+            animation: prismMove 1.5s infinite linear;
+            margin-bottom: 10px;
+        }
+
+        @keyframes prismMove {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+
+        .loading-text {
+            font-size: 13.5px;
+            color: var(--walnut-mid);
+        }
+
+        /* 요약 결과 카드 */
+        #result-box {
+            display: none;
+            margin-top: 24px;
+            background: #ffffff;
+            border: 2px solid var(--ink);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: left;
+            box-shadow: 3px 3px 0px var(--walnut-border);
+            line-height: 1.75;
+            font-size: 14.5px;
+            color: var(--ink);
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e2dcd5;
+            padding-bottom: 10px;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .result-title {
+            font-family: 'Space Mono', monospace;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--walnut-deep);
+            letter-spacing: 0.5px;
+        }
+
+        .model-tag {
+            font-family: 'Space Mono', monospace;
+            font-size: 11px;
+            background: var(--prism-line);
+            border: 1.5px solid var(--ink);
+            border-radius: 999px;
+            padding: 2px 10px;
+            font-weight: 700;
+            color: var(--ink);
+        }
+
+        .footer-sign {
+            margin-top: 16px;
+            font-family: 'Space Mono', monospace;
+            font-size: 11px;
+            color: var(--walnut-mid);
+            letter-spacing: 0.5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-pill">
+        <span class="prism-dot"></span>
+        <span>turn on prism mode for the best summary!</span>
+    </div>
+
+    <div class="shop-window">
+        <div class="walnut-header">
+            <span class="window-dot"></span>
+            <span class="window-dot"></span>
+            <span class="window-dot"></span>
+        </div>
+        <div class="prism-bar"></div>
+
+        <div class="content-body">
+            <span class="badge-est">PAPER CRAFT • EST. 2026</span>
+            <h1>AI 논문 요약 공방</h1>
+            <p class="subtitle">PDF 문서를 올려주시면 핵심 내용만 3줄로 정돈해 드립니다.</p>
+
+            <label for="pdfFile" class="upload-zone">
+                <!-- 깔끔한 라인 아트 문서 아이콘 -->
+                <svg class="doc-icon" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                    <polyline points="10 9 9 9 8 9"></polyline>
+                </svg>
+                <span class="file-label-text" id="fileNameDisplay">클릭하여 PDF 논문 파일 선택</span>
+                <span class="file-sub-hint" id="fileSubHint">PDF DOCUMENT ONLY</span>
+            </label>
+            <input type="file" id="pdfFile" accept="application/pdf" onchange="updateFileName()">
+
+            <button class="submit-btn" onclick="uploadPdf()">3줄 요약 추출하기</button>
+
+            <div class="loading-wrap" id="loadingWrap">
+                <div class="loading-bar"></div>
+                <div class="loading-text">문서를 읽고 핵심 문장을 정리하고 있습니다...</div>
+            </div>
+
+            <div id="result-box"></div>
+        </div>
+    </div>
+
+    <div class="footer-sign">walnut & prism studio • powered by FastAPI & Gemini</div>
+
+    <script>
+        function updateFileName() {
+            const fileInput = document.getElementById('pdfFile');
+            const display = document.getElementById('fileNameDisplay');
+            const subHint = document.getElementById('fileSubHint');
+            if (fileInput.files.length > 0) {
+                display.textContent = fileInput.files[0].name;
+                subHint.textContent = "READY TO SUMMARIZE";
+            } else {
+                display.textContent = "클릭하여 PDF 논문 파일 선택";
+                subHint.textContent = "PDF DOCUMENT ONLY";
+            }
+        }
+
+        async function uploadPdf() {
+            const fileInput = document.getElementById('pdfFile');
+            const resultBox = document.getElementById('result-box');
+            const loadingWrap = document.getElementById('loadingWrap');
+
+            if (!fileInput.files[0]) {
+                alert("먼저 요약할 PDF 파일을 선택해 주세요.");
+                return;
+            }
+
+            loadingWrap.style.display = "block";
+            resultBox.style.display = "none";
+
+            const formData = new FormData();
+            formData.append("file", fileInput.files[0]);
+
+            try {
+                const response = await fetch("/upload", {
+                    method: "POST",
+                    body: formData
+                });
+                const data = await response.json();
+
+                if (response.ok) {
+                    const formattedSummary = data.summary.replace(/\n/g, '<br>');
+                    resultBox.innerHTML = `
+                        <div class="result-header">
+                            <span class="result-title">SUMMARY NOTE</span>
+                            <span class="model-tag">${data.used_model}</span>
+                        </div>
+                        <div>${formattedSummary}</div>
+                    `;
+                    resultBox.style.display = "block";
+                } else {
+                    alert("오류: " + data.detail);
+                }
+            } catch (error) {
+                alert("서버와 통신 중 문제가 발생했습니다.");
+            } finally {
+                loadingWrap.style.display = "none";
+            }
+        }
+    </script>
+</body>
+</html>

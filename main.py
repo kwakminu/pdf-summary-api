@@ -1,5 +1,6 @@
 import os
 from fastapi import FastAPI, UploadFile, File, HTTPException
+from fastapi.responses import FileResponse
 from pypdf import PdfReader
 from google import genai
 from dotenv import load_dotenv
@@ -13,7 +14,7 @@ app = FastAPI()
 
 @app.get("/")
 def read_root():
-    return {"message": "AI 논문 요약 서버가 정상 작동 중입니다!"}
+    return FileResponse("index.html")
 
 @app.post("/upload")
 async def upload_pdf(file: UploadFile = File(...)):
